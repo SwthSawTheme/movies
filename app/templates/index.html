@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Filmes em Destaque</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Filmes em Destaque</h1>
+    </header>
+    <main class="grid">
+        {% for filme in filmes %}
+        <div class="card">
+            <img src="{{ url_for('static', filename=filme.imagem) }}" alt="{{ filme.titulo }}">
+            <h2>{{ filme.titulo }}</h2>
+            <p>{{ filme.descricao }}</p>
+        </div>
+        {% endfor %}
+    </main>
+</body>
+</html>

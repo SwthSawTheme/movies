@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ filme.titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>{{ filme.titulo }}</h1>
+    </header>
+    <main style="display: flex; justify-content: center; padding: 20px;">
+        <video width="800" controls autoplay>
+            <source src="{{ url_for('static', filename=filme.video) }}" type="video/mp4">
+            Seu navegador não suporta o elemento de vídeo.
+        </video>
+    </main>
+</body>
+</html>
