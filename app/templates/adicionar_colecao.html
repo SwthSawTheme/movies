@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Adicionar Coleção</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>➕ Nova Coleção</h1>
+    <a class="btn" href="{{ url_for('routes.listar_colecoes') }}">← Voltar</a>
+  </header>
+  <main class="form-container">
+    <form method="POST">
+      <label for="nome">Nome da Coleção:</label>
+      <input type="text" name="nome" required>
+
+      <label for="descricao">Descrição:</label>
+      <textarea name="descricao" rows="4" required></textarea>
+
+      <label for="imagem">Caminho da Imagem:</label>
+      <input type="text" name="imagem" required>
+
+      <button type="submit" class="btn">Salvar Coleção</button>
+    </form>
+  </main>
+</body>
+</html>

@@ -23,7 +23,16 @@
 
             <label for="video">Caminho do vídeo:</label>
             <input type="text" name="video" value="{{ filme.video }}" required>
-
+            <label for="colecao_id">Coleção:</label>
+            <select name="colecao_id">
+            <option value="">Nenhuma</option>
+            {% for col in colecoes %}
+                <option value="{{ col.id }}"
+                {% if filme and filme.colecao_id == col.id %}selected{% endif %}>
+                {{ col.nome }}
+                </option>
+            {% endfor %}
+            </select>
             <button type="submit" class="btn">Salvar Alterações</button>
             <a href="{{ url_for('routes.home') }}" class="btn btn-danger">Cancelar</a>
         </form>

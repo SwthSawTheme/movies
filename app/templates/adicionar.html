@@ -23,7 +23,16 @@
 
             <label for="video">Caminho completo do vídeo (ex: D:\Filmes\filme.mp4):</label>
             <input type="text" name="video" required>
-
+            <label for="colecao_id">Coleção:</label>
+            <select name="colecao_id">
+            <option value="">Nenhuma</option>
+            {% for col in colecoes %}
+                <option value="{{ col.id }}"
+                {% if filme and filme.colecao_id == col.id %}selected{% endif %}>
+                {{ col.nome }}
+                </option>
+            {% endfor %}
+            </select>
             <button type="submit" class="btn">Salvar</button>
         </form>
     </main>

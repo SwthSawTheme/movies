@@ -4,7 +4,7 @@ from . import db
 import os
 from werkzeug.utils import secure_filename
 from flask import current_app as app
-from .models import Filme
+from .models import Filme, Colecao
 from flask import send_file
 import mimetypes
 
@@ -12,7 +12,7 @@ routes = Blueprint('routes', __name__)
 
 @routes.route("/")
 def home():
-    filmes = Filme.query.all()
+    filmes = Filme.query.filter(Filme.colecao_id == None).all()
     return render_template("index.html", filmes=filmes)
 
 @routes.route("/assistir/<int:filme_id>")
@@ -22,36 +22,40 @@ def assistir(filme_id):
 
 @routes.route("/adicionar", methods=["GET", "POST"])
 def adicionar():
+    colecoes = Colecao.query.all()
     if request.method == "POST":
         titulo = request.form["titulo"]
         descricao = request.form["descricao"]
-        imagem_path = request.form["imagem"]  # Caminho absoluto
-        video_path = request.form["video"]    # Caminho absoluto
+        imagem = request.form["imagem"]
+        video = request.form["video"]
+        colecao_id = request.form.get("colecao_id") or None
 
         novo_filme = Filme(
             titulo=titulo,
             descricao=descricao,
-            imagem=imagem_path,
-            video=video_path
+            imagem=imagem,
+            video=video,
+            colecao_id=colecao_id
         )
         db.session.add(novo_filme)
         db.session.commit()
-
         return redirect(url_for("routes.home"))
-
-    return render_template("adicionar.html")
+    return render_template("adicionar.html", colecoes=colecoes)
 
 @routes.route("/editar/<int:filme_id>", methods=["GET", "POST"])
 def editar(filme_id):
     filme = Filme.query.get_or_404(filme_id)
+    colecoes = Colecao.query.all()
     if request.method == "POST":
         filme.titulo = request.form["titulo"]
         filme.descricao = request.form["descricao"]
         filme.imagem = request.form["imagem"]
         filme.video = request.form["video"]
+        filme.colecao_id = request.form.get("colecao_id") or None
         db.session.commit()
         return redirect(url_for("routes.home"))
-    return render_template("editar.html", filme=filme)
+    return render_template("editar.html", filme=filme, colecoes=colecoes)
+
 
 @routes.route("/remover/<int:filme_id>")
 def remover(filme_id):
@@ -75,3 +79,33 @@ def servir_video(filme_id):
 def servir_imagem(filme_id):
     filme = Filme.query.get_or_404(filme_id)
     return send_file(filme.imagem, mimetype='image/jpeg')
+
+@routes.route("/colecoes")
+def listar_colecoes():
+    colecoes = Colecao.query.all()
+    return render_template("colecoes.html", colecoes=colecoes)
+
+@routes.route("/colecao/<int:colecao_id>")
+def ver_colecao(colecao_id):
+    colecao = Colecao.query.get_or_404(colecao_id)
+    return render_template("colecao.html", colecao=colecao)
+
+@routes.route("/colecao/adicionar", methods=["GET", "POST"])
+def adicionar_colecao():
+    if request.method == "POST":
+        nome = request.form["nome"]
+        descricao = request.form["descricao"]
+        imagem = request.form["imagem"]
+
+        nova_colecao = Colecao(nome=nome, descricao=descricao, imagem=imagem)
+        db.session.add(nova_colecao)
+        db.session.commit()
+        return redirect(url_for("routes.listar_colecoes"))
+    return render_template("adicionar_colecao.html")
+
+@routes.route("/media/imagem_colecao/<int:colecao_id>")
+def servir_imagem_colecao(colecao_id):
+    colecao = Colecao.query.get_or_404(colecao_id)
+    if not os.path.exists(colecao.imagem):
+        return f"Imagem da coleção não encontrada: {colecao.imagem}", 404
+    return send_file(colecao.imagem, mimetype="image/jpeg")
