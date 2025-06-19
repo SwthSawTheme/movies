@@ -2,19 +2,23 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Filmes em Destaque</title>
+    <title>Filmes</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header>
-        <h1>Filmes em Destaque</h1>
+        <h1>🎬 Filmes em Destaque</h1>
+        <a class="btn" href="{{ url_for('routes.adicionar') }}">➕ Adicionar Filme</a>
     </header>
     <main class="grid">
         {% for filme in filmes %}
         <div class="card">
-            <img src="{{ url_for('static', filename=filme.imagem) }}" alt="{{ filme.titulo }}">
+            <img src="{{ url_for('routes.servir_imagem', filme_id=filme.id) }}" alt="{{ filme.titulo }}">
             <h2>{{ filme.titulo }}</h2>
             <p>{{ filme.descricao }}</p>
+            <a class="btn" href="{{ url_for('routes.assistir', filme_id=filme.id) }}">▶ Assistir</a>
+            <a class="btn" href="{{ url_for('routes.editar', filme_id=filme.id) }}">✏️ Editar</a>
+            <a class="btn btn-danger" href="{{ url_for('routes.remover', filme_id=filme.id) }}" onclick="return confirm('Tem certeza que deseja excluir este filme?')">🗑 Remover</a>
         </div>
         {% endfor %}
     </main>

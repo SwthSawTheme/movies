@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Filme</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>➕ Novo Filme</h1>
+        <a class="btn" href="{{ url_for('routes.home') }}">← Voltar</a>
+    </header>
+    <main class="form-container">
+        <form method="POST">
+            <label for="titulo">Título:</label>
+            <input type="text" name="titulo" required>
+
+            <label for="descricao">Descrição:</label>
+            <textarea name="descricao" rows="4" required></textarea>
+
+            <label for="imagem">Caminho completo da imagem (ex: D:\Filmes\capa.jpg):</label>
+            <input type="text" name="imagem" required>
+
+            <label for="video">Caminho completo do vídeo (ex: D:\Filmes\filme.mp4):</label>
+            <input type="text" name="video" required>
+
+            <button type="submit" class="btn">Salvar</button>
+        </form>
+    </main>
+</body>
+</html>
