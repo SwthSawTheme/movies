@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <div class="colecao-background" style="background-image: url('{{ url_for('routes.servir_imagem_colecao', colecao_id=colecao.id) }}')"></div>
   <header>
     <h1>{{ colecao.nome }}</h1>
     <p style="text-align: center; max-width: 800px; margin: auto; color: #ccc;">{{ colecao.descricao }}</p>

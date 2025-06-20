@@ -12,8 +12,9 @@ routes = Blueprint('routes', __name__)
 
 @routes.route("/")
 def home():
-    filmes = Filme.query.filter(Filme.colecao_id == None).all()
+    filmes = Filme.query.filter_by(colecao_id=None).order_by(Filme.id.desc()).all()
     return render_template("index.html", filmes=filmes)
+
 
 @routes.route("/assistir/<int:filme_id>")
 def assistir(filme_id):
