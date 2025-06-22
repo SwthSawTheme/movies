@@ -86,10 +86,19 @@ def listar_colecoes():
     colecoes = Colecao.query.all()
     return render_template("colecoes.html", colecoes=colecoes)
 
+@routes.route('/colecao/<int:colecao_id>/assistir_todos')
+def assistir_todos(colecao_id):
+    colecao = Colecao.query.get_or_404(colecao_id)
+    filmes_serializaveis = [
+        {'id': f.id, 'titulo': f.titulo} for f in colecao.filmes
+    ]
+    return render_template('assistir_todos.html', colecao=colecao, filmes=filmes_serializaveis)
+
 @routes.route("/colecao/<int:colecao_id>")
 def ver_colecao(colecao_id):
     colecao = Colecao.query.get_or_404(colecao_id)
-    return render_template("colecao.html", colecao=colecao)
+    filmes_ordenados = sorted(colecao.filmes, key=lambda f: f.id)
+    return render_template('colecao.html', colecao=colecao, filmes=filmes_ordenados)
 
 @routes.route("/colecao/adicionar", methods=["GET", "POST"])
 def adicionar_colecao():
