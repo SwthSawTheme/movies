@@ -18,6 +18,7 @@
       <h2>{{ colecao.nome }}</h2>
       <p>{{ colecao.descricao }}</p>
       <a class="btn" href="{{ url_for('routes.ver_colecao', colecao_id=colecao.id) }}">🎬 Ver Coleção</a>
+      <a class="btn" href="{{ url_for('routes.editar_colecao', colecao_id=colecao.id) }}">✏️ Editar</a>
     </div>
     {% endfor %}
   </main>
