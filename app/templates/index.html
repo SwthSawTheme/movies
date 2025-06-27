@@ -6,30 +6,53 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header style="text-align: center; padding: 20px;">
+<header style="text-align: center; padding: 20px;">
     <h1 style="color: #e50914; font-size: 36px;">
-        🎬 Minha Biblioteca de Filmes
+        🍿 Minha Biblioteca de Filmes
     </h1>
     <div style="margin-top: 20px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-        <a class="btn" href="{{ url_for('routes.adicionar') }}">+ Adicionar Filme</a>
-        <a class="btn" href="{{ url_for('routes.adicionar_colecao') }}">+ Adicionar Coleção</a>
+        <a class="btn" href="{{ url_for('routes.adicionar') }}">➕ Adicionar Filme</a>
+        <a class="btn" href="{{ url_for('routes.adicionar_colecao') }}">➕ Adicionar Coleção</a>
         <a class="btn" href="{{ url_for('routes.listar_colecoes') }}">📚 Ver Coleções</a>
     </div>
-    </header>
+</header>
 
-    <main class="grid">
-        {% for filme in filmes %}
-        <div class="card">
-            <img src="{{ url_for('routes.servir_imagem', filme_id=filme.id) }}" alt="{{ filme.titulo }}">
-            <h2>{{ filme.titulo }}</h2>
-            <p>{{ filme.descricao }}</p>
-            <div class="actions">
-                <a class="btn" href="{{ url_for('routes.assistir', filme_id=filme.id) }}">▶ Assistir</a>
-                <a class="btn" href="{{ url_for('routes.editar', filme_id=filme.id) }}">✏️ Editar</a>
-                <a class="btn btn-danger" href="{{ url_for('routes.remover', filme_id=filme.id) }}" onclick="return confirm('Tem certeza que deseja remover?')">🗑 Remover</a>
-            </div>
+<main class="grid">
+    {% for filme in filmes.items %}
+    <div class="card">
+        <img src="{{ url_for('routes.servir_imagem', filme_id=filme.id) }}" alt="{{ filme.titulo }}">
+        <h2>{{ filme.titulo }}</h2>
+        <p>{{ filme.descricao }}</p>
+        <div class="actions">
+            <a class="btn" href="{{ url_for('routes.assistir', filme_id=filme.id) }}">▶️ Assistir</a>
+            <a class="btn" href="{{ url_for('routes.editar', filme_id=filme.id) }}">✏️ Editar</a>
+            <a class="btn btn-danger" href="{{ url_for('routes.remover', filme_id=filme.id) }}" onclick="return confirm('Tem certeza que deseja remover?')">🗑️ Remover</a>
         </div>
-        {% endfor %}
-    </main>
+    </div>
+    {% endfor %}
+</main>
+
+<div style="display: flex; justify-content: center; align-items: center; margin: 20px 0; flex-wrap: wrap; gap: 8px;">
+    {% if filmes.has_prev %}
+    <a class="btn" href="{{ url_for('routes.home', page=filmes.prev_num) }}">← Anterior</a>
+    {% endif %}
+
+    {% for page_num in filmes.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+            {% if page_num == filmes.page %}
+                <span class="btn" style="background-color: white; color: red;">{{ page_num }}</span>
+            {% else %}
+                <a class="btn" href="{{ url_for('routes.home', page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+            <span class="btn">…</span>
+        {% endif %}
+    {% endfor %}
+
+    {% if filmes.has_next %}
+    <a class="btn" href="{{ url_for('routes.home', page=filmes.next_num) }}">Próximo →</a>
+    {% endif %}
+</div>
+
 </body>
 </html>
