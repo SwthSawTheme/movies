@@ -86,7 +86,9 @@ def servir_imagem(filme_id):
 
 @routes.route("/colecoes")
 def listar_colecoes():
-    colecoes = Colecao.query.all()
+    page = request.args.get("page", 1, type=int)
+    per_page = 4
+    colecoes = Colecao.query.paginate(page=page, per_page=per_page)
     return render_template("colecoes.html", colecoes=colecoes)
 
 @routes.route('/colecao/<int:colecao_id>/assistir_todos')

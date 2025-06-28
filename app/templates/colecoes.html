@@ -12,15 +12,41 @@
     <a class="btn" href="{{ url_for('routes.home') }}">← Voltar aos Filmes</a>
   </header>
   <main class="grid">
-    {% for colecao in colecoes %}
-    <div class="card colecao">
+  {% for colecao in colecoes.items %}
+    <div class="card">
       <img src="{{ url_for('routes.servir_imagem_colecao', colecao_id=colecao.id) }}" alt="{{ colecao.nome }}">
       <h2>{{ colecao.nome }}</h2>
       <p>{{ colecao.descricao }}</p>
-      <a class="btn" href="{{ url_for('routes.ver_colecao', colecao_id=colecao.id) }}">🎬 Ver Coleção</a>
-      <a class="btn" href="{{ url_for('routes.editar_colecao', colecao_id=colecao.id) }}">✏️ Editar</a>
+      <div class="actions" style="display: flex; flex-direction: column; gap: 8px;">
+        <a class="btn" href="{{ url_for('routes.ver_colecao', colecao_id=colecao.id) }}">🎬 Ver Coleção</a>
+        <a class="btn btn-warning" href="{{ url_for('routes.editar_colecao', colecao_id=colecao.id) }}">✏️ Editar</a>
+      </div>
     </div>
-    {% endfor %}
-  </main>
+  {% endfor %}
+</main>
+
+<!-- Paginação -->
+<div class="pagination">
+  {% if colecoes.has_prev %}
+    <a class="btn" href="{{ url_for('routes.listar_colecoes', page=colecoes.prev_num) }}">← Anterior</a>
+  {% endif %}
+
+  {% for page_num in colecoes.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+    {% if page_num %}
+      {% if page_num == colecoes.page %}
+        <span class="btn active">{{ page_num }}</span>
+      {% else %}
+        <a class="btn" href="{{ url_for('routes.listar_colecoes', page=page_num) }}">{{ page_num }}</a>
+      {% endif %}
+    {% else %}
+      <span class="ellipsis">…</span>
+    {% endif %}
+  {% endfor %}
+
+  {% if colecoes.has_next %}
+    <a class="btn" href="{{ url_for('routes.listar_colecoes', page=colecoes.next_num) }}">Próxima →</a>
+  {% endif %}
+</div>
+
 </body>
 </html>
