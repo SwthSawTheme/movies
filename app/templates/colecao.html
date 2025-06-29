@@ -19,9 +19,11 @@
       <img src="{{ url_for('routes.servir_imagem', filme_id=filme.id) }}" alt="{{ filme.titulo }}">
       <h2>{{ filme.titulo }}</h2>
       <p>{{ filme.descricao }}</p>
-      <a class="btn" href="{{ url_for('routes.assistir', filme_id=filme.id) }}">▶ Assistir</a>
-      <a class="btn" href="{{ url_for('routes.editar', filme_id=filme.id) }}">✏️ Editar</a>
-      <a class="btn btn-danger" href="{{ url_for('routes.remover', filme_id=filme.id) }}" onclick="return confirm('Tem certeza que deseja remover?')">🗑 Remover</a>
+      <div class="actions">
+          <a class="btn" href="{{ url_for('routes.assistir', filme_id=filme.id) }}">▶️ Assistir</a>
+          <a class="btn" href="{{ url_for('routes.editar', filme_id=filme.id) }}">✏️ Editar</a>
+          <a class="btn btn-danger" href="{{ url_for('routes.remover', filme_id=filme.id) }}" onclick="return confirm('Tem certeza que deseja remover?')">🗑️ Remover</a>
+      </div>
     </div>
     {% endfor %}
   </main>

@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Editar Coleção</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <title>Editar Coleção</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <header>
-    <h1>✏️ Editar Coleção</h1>
-    <a class="btn" href="{{ url_for('routes.listar_colecoes') }}">← Voltar</a>
-  </header>
-  <main>
-    <form action="" method="post" enctype="multipart/form-data">
-      <label for="nome">Nome:</label>
-      <input type="text" name="nome" id="nome" value="{{ colecao.nome }}" required>
+    <header style="text-align: center; padding: 20px;">
+        <h1 style="color: #e50914;">✏️ Editar Coleção</h1>
+    </header>
 
-      <label for="descricao">Descrição:</label>
-      <textarea name="descricao" id="descricao" required>{{ colecao.descricao }}</textarea>
+    <main class="form-container">
+        <form method="POST">
+            <label for="titulo">Título:</label>
+            <input type="text" name="titulo" id="titulo" value="{{ colecao.titulo }}" required>
 
-      <label for="imagem">Nova Imagem (opcional):</label>
-      <input type="file" name="imagem" id="imagem">
+            <label for="descricao">Descrição:</label>
+            <textarea name="descricao" id="descricao" rows="5" required>{{ colecao.descricao }}</textarea>
 
-      <button type="submit" class="btn">Salvar Alterações</button>
-    </form>
-  </main>
+            <label for="imagem">Caminho da imagem (no seu PC):</label>
+            <input type="text" name="imagem" id="imagem" value="{{ colecao.imagem }}" required>
+
+            <button class="btn" type="submit">💾 Salvar Alterações</button>
+        </form>
+    </main>
 </body>
 </html>

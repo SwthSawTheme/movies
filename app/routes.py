@@ -118,22 +118,20 @@ def adicionar_colecao():
         return redirect(url_for("routes.listar_colecoes"))
     return render_template("adicionar_colecao.html")
 
-@routes.route('/editar_colecao/<int:colecao_id>', methods=['GET', 'POST'], endpoint="editar_colecao")
+@routes.route('/editar_colecao/<int:colecao_id>', methods=['GET', 'POST'])
 def editar_colecao(colecao_id):
     colecao = Colecao.query.get_or_404(colecao_id)
+
     if request.method == 'POST':
-        colecao.nome = request.form['nome']
+        colecao.titulo = request.form['titulo']
         colecao.descricao = request.form['descricao']
-        
-        imagem = request.files.get('imagem')
-        if imagem:
-            caminho_imagem = salvar_imagem(imagem, 'colecoes')
-            colecao.imagem = caminho_imagem
+        colecao.imagem = request.form['imagem']  # Caminho direto no PC
 
         db.session.commit()
         return redirect(url_for('routes.listar_colecoes'))
 
     return render_template('editar_colecao.html', colecao=colecao)
+
 
 @routes.route("/media/imagem_colecao/<int:colecao_id>")
 def servir_imagem_colecao(colecao_id):
