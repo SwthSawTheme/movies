@@ -94,10 +94,23 @@ def listar_colecoes():
 @routes.route('/colecao/<int:colecao_id>/assistir_todos')
 def assistir_todos(colecao_id):
     colecao = Colecao.query.get_or_404(colecao_id)
-    filmes_serializaveis = [
-        {'id': f.id, 'titulo': f.titulo} for f in colecao.filmes
-    ]
-    return render_template('assistir_todos.html', colecao=colecao, filmes=filmes_serializaveis)
+
+    # Lista serializável só com o que usamos no player
+    filmes_list = [{'id': f.id, 'titulo': f.titulo} for f in colecao.filmes]
+
+    # índice inicial (0 por padrão)
+    indice = request.args.get('indice', 0, type=int)
+    if filmes_list:
+        indice = max(0, min(indice, len(filmes_list) - 1))
+    else:
+        indice = 0
+
+    return render_template(
+        'assistir_todos.html',
+        colecao=colecao,
+        filmes=filmes_list,
+        indice_atual=indice
+    )
 
 @routes.route("/colecao/<int:colecao_id>")
 def ver_colecao(colecao_id):
