@@ -10,19 +10,21 @@ import mimetypes
 
 routes = Blueprint('routes', __name__)
 
-@routes.route("/")
+@routes.route('/')
 def home():
     page = request.args.get('page', 1, type=int)
-    filmes = Filme.query.filter(Filme.colecao_id == None)\
-        .order_by(Filme.id.desc())\
-        .paginate(page=page, per_page=4)
+    filmes = (Filme.query
+              .filter(Filme.colecao_id == None)
+              .order_by(Filme.id.desc())
+              .paginate(page=page, per_page=4))
     return render_template('index.html', filmes=filmes)
 
 
-@routes.route("/assistir/<int:filme_id>")
+@routes.route('/assistir/<int:filme_id>')
 def assistir(filme_id):
+    page = request.args.get('page', 1, type=int)
     filme = Filme.query.get_or_404(filme_id)
-    return render_template("assistir.html", filme=filme)
+    return render_template('assistir.html', filme=filme, page_back=page)
 
 @routes.route("/adicionar", methods=["GET", "POST"])
 def adicionar():
@@ -57,7 +59,7 @@ def editar(filme_id):
         filme.video = request.form["video"]
         filme.colecao_id = request.form.get("colecao_id") or None
         db.session.commit()
-        return redirect(url_for("routes.home"))
+        return redirect(url_for('routes.home', page=request.args.get('page', 1, type=int)))
     return render_template("editar.html", filme=filme, colecoes=colecoes)
 
 
@@ -66,7 +68,7 @@ def remover(filme_id):
     filme = Filme.query.get_or_404(filme_id)
     db.session.delete(filme)
     db.session.commit()
-    return redirect(url_for("routes.home"))
+    return redirect(url_for('routes.home', page=request.args.get('page', 1, type=int)))
 
 
 @routes.route('/media/video/<int:filme_id>')
@@ -84,12 +86,11 @@ def servir_imagem(filme_id):
     filme = Filme.query.get_or_404(filme_id)
     return send_file(filme.imagem, mimetype='image/jpeg')
 
-@routes.route("/colecoes")
+@routes.route('/colecoes')
 def listar_colecoes():
-    page = request.args.get("page", 1, type=int)
-    per_page = 4
-    colecoes = Colecao.query.paginate(page=page, per_page=per_page)
-    return render_template("colecoes.html", colecoes=colecoes)
+    page = request.args.get('page', 1, type=int)
+    colecoes = Colecao.query.order_by(Colecao.id.desc()).paginate(page=page, per_page=4)
+    return render_template('colecoes.html', colecoes=colecoes)
 
 @routes.route('/colecao/<int:colecao_id>/assistir_todos')
 def assistir_todos(colecao_id):
@@ -112,11 +113,11 @@ def assistir_todos(colecao_id):
         indice_atual=indice
     )
 
-@routes.route("/colecao/<int:colecao_id>")
+@routes.route('/colecao/<int:colecao_id>')
 def ver_colecao(colecao_id):
+    page_back = request.args.get('page', 1, type=int)
     colecao = Colecao.query.get_or_404(colecao_id)
-    filmes_ordenados = sorted(colecao.filmes, key=lambda f: f.id)
-    return render_template('colecao.html', colecao=colecao, filmes=filmes_ordenados)
+    return render_template('colecao.html', colecao=colecao, page_back=page_back)
 
 @routes.route("/colecao/adicionar", methods=["GET", "POST"])
 def adicionar_colecao():

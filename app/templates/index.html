@@ -11,6 +11,7 @@
         🍿 Minha Biblioteca de Filmes
     </h1>
     <div style="margin-top: 20px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+        <a class="btn" href="{{ url_for('routes.home', page=1) }}">🏠 Página inicial</a>
         <a class="btn" href="{{ url_for('routes.adicionar') }}">➕ Adicionar Filme</a>
         <a class="btn" href="{{ url_for('routes.adicionar_colecao') }}">➕ Adicionar Coleção</a>
         <a class="btn" href="{{ url_for('routes.listar_colecoes') }}">📚 Ver Coleções</a>
@@ -24,9 +25,11 @@
         <h2>{{ filme.titulo }}</h2>
         <p>{{ filme.descricao }}</p>
         <div class="actions">
-            <a class="btn" href="{{ url_for('routes.assistir', filme_id=filme.id) }}">▶️ Assistir</a>
-            <a class="btn" href="{{ url_for('routes.editar', filme_id=filme.id) }}">✏️ Editar</a>
-            <a class="btn btn-danger" href="{{ url_for('routes.remover', filme_id=filme.id) }}" onclick="return confirm('Tem certeza que deseja remover?')">🗑️ Remover</a>
+            <a class="btn" href="{{ url_for('routes.assistir', filme_id=filme.id, page=filmes.page) }}">▶️ Assistir</a>
+            <a class="btn" href="{{ url_for('routes.editar',  filme_id=filme.id, page=filmes.page) }}">✏️ Editar</a>
+            <a class="btn btn-danger"
+            href="{{ url_for('routes.remover', filme_id=filme.id, page=filmes.page) }}"
+            onclick="return confirm('Tem certeza que deseja remover?')">🗑️ Remover</a>
         </div>
     </div>
     {% endfor %}

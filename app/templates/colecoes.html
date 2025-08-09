@@ -8,6 +8,7 @@
 <body>
   <header>
     <h1>🎞️ Minhas Coleções</h1>
+    <a class="btn" href="{{ url_for('routes.listar_colecoes', page=1) }}">🏠 Página inicial</a>
     <a class="btn" href="{{ url_for('routes.adicionar_colecao') }}">+ Adicionar Coleção</a>
     <a class="btn" href="{{ url_for('routes.home') }}">← Voltar aos Filmes</a>
   </header>
@@ -18,8 +19,8 @@
       <h2>{{ colecao.nome }}</h2>
       <p>{{ colecao.descricao }}</p>
       <div class="actions" style="display: flex; flex-direction: column; gap: 8px;">
-        <a class="btn" href="{{ url_for('routes.ver_colecao', colecao_id=colecao.id) }}">🎬 Ver Coleção</a>
-        <a class="btn btn-warning" href="{{ url_for('routes.editar_colecao', colecao_id=colecao.id) }}">✏️ Editar</a>
+        <a class="btn" href="{{ url_for('routes.ver_colecao', colecao_id=colecao.id, page=colecoes.page) }}">🎬 Ver Coleção</a>
+        <a class="btn" href="{{ url_for('routes.editar_colecao', colecao_id=colecao.id, page=colecoes.page) }}">✏️ Editar</a>
       </div>
     </div>
   {% endfor %}
