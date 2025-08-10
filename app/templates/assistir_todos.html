@@ -5,6 +5,27 @@
   <title>Assistindo: {{ colecao.nome }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <style>
+    /* remove a borda quando entrar em tela cheia */
+    video:fullscreen { 
+      border: none !important; 
+      border-radius: 0 !important;
+      outline: none !important;
+    }
+    video:-webkit-full-screen { 
+      border: none !important; 
+      border-radius: 0 !important;
+      outline: none !important;
+    }
+    video:-moz-full-screen { 
+      border: none !important; 
+      border-radius: 0 !important;
+      outline: none !important;
+    }
+    video:-ms-fullscreen { 
+      border: none !important; 
+      border-radius: 0 !important;
+      outline: none !important;
+    }
     video {
       width: 100%;
       max-width: 960px;
