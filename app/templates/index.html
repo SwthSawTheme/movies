@@ -16,46 +16,98 @@
         <a class="btn" href="{{ url_for('routes.adicionar_colecao') }}">➕ Adicionar Coleção</a>
         <a class="btn" href="{{ url_for('routes.listar_colecoes') }}">📚 Ver Coleções</a>
     </div>
+    <form class="searchbox" action="{{ url_for('routes.home') }}" method="get" role="search">
+        <input
+            class="searchbox__input"
+            type="text"
+            name="q"
+            value="{{ q }}"
+            placeholder="Pesquisar filmes..."
+            aria-label="Pesquisar filmes"
+        />
+        {% if q %}
+            <button class="searchbox__clear" type="button"
+                    title="Limpar"
+                    onclick="location.href='{{ url_for('routes.home', page=1) }}'">×</button>
+        {% endif %}
+        <button class="searchbox__go" type="submit" aria-label="Buscar">
+            <!-- ícone de lupa -->
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+            <path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </form>
 </header>
 
 <main class="grid">
-    {% for filme in filmes.items %}
-    <div class="card">
-        <img src="{{ url_for('routes.servir_imagem', filme_id=filme.id) }}" alt="{{ filme.titulo }}">
-        <h2>{{ filme.titulo }}</h2>
-        <p>{{ filme.descricao }}</p>
-        <div class="actions">
-            <a class="btn" href="{{ url_for('routes.assistir', filme_id=filme.id, page=filmes.page) }}">▶️ Assistir</a>
-            <a class="btn" href="{{ url_for('routes.editar',  filme_id=filme.id, page=filmes.page) }}">✏️ Editar</a>
-            <a class="btn btn-danger"
-            href="{{ url_for('routes.remover', filme_id=filme.id, page=filmes.page) }}"
-            onclick="return confirm('Tem certeza que deseja remover?')">🗑️ Remover</a>
-        </div>
+  {% for filme in filmes.items %}
+  <div class="card">
+    <img src="{{ url_for('routes.servir_imagem', filme_id=filme.id) }}" alt="{{ filme.titulo }}">
+    <h2>{{ filme.titulo }}</h2>
+    <p>{{ filme.descricao }}</p>
+
+    <div class="actions">
+      <a class="btn"
+         href="{{ url_for('routes.assistir', filme_id=filme.id, page=filmes.page, q=q) }}">▶ Assistir</a>
+
+      <a class="btn"
+         href="{{ url_for('routes.editar', filme_id=filme.id, page=filmes.page, q=q) }}">✏️ Editar</a>
+
+      <a class="btn btn-danger"
+         href="{{ url_for('routes.remover', filme_id=filme.id, page=filmes.page, q=q) }}"
+         onclick="return confirm('Tem certeza que deseja remover?')">🗑 Remover</a>
     </div>
-    {% endfor %}
+  </div>
+  {% endfor %}
+
+  {% if filmes.total == 0 %}
+    <p style="text-align:center; color:#aaa; width:100%;">Nenhum filme encontrado para “{{ q }}”.</p>
+  {% endif %}
 </main>
 
-<div style="display: flex; justify-content: center; align-items: center; margin: 20px 0; flex-wrap: wrap; gap: 8px;">
-    {% if filmes.has_prev %}
-    <a class="btn" href="{{ url_for('routes.home', page=filmes.prev_num) }}">← Anterior</a>
-    {% endif %}
+<div class="pagination">
+  {% if filmes.has_prev %}
+    <a class="btn btn-outline"
+       href="{{ url_for('routes.home', page=filmes.prev_num, q=q) }}">← Anterior</a>
+  {% endif %}
 
-    {% for page_num in filmes.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-        {% if page_num %}
-            {% if page_num == filmes.page %}
-                <span class="btn" style="background-color: white; color: red;">{{ page_num }}</span>
-            {% else %}
-                <a class="btn" href="{{ url_for('routes.home', page=page_num) }}">{{ page_num }}</a>
-            {% endif %}
-        {% else %}
-            <span class="btn">…</span>
-        {% endif %}
-    {% endfor %}
-
-    {% if filmes.has_next %}
-    <a class="btn" href="{{ url_for('routes.home', page=filmes.next_num) }}">Próximo →</a>
+  {% for p in filmes.iter_pages(left_edge=1, left_current=2, right_current=2, right_edge=1) %}
+    {% if p %}
+      <a class="btn {{ 'btn-primary' if p == filmes.page else 'btn-outline' }}"
+         href="{{ url_for('routes.home', page=p, q=q) }}">{{ p }}</a>
+    {% else %}
+      <span class="dots">…</span>
     {% endif %}
+  {% endfor %}
+
+  {% if filmes.has_next %}
+    <a class="btn btn-outline"
+       href="{{ url_for('routes.home', page=filmes.next_num, q=q) }}">Próxima →</a>
+  {% endif %}
 </div>
 
+<script>
+document.getElementById("searchBtn").addEventListener("click", function() {
+  let query = document.getElementById("searchInput").value.toLowerCase();
+  let cards = document.querySelectorAll(".card");
+
+  cards.forEach(card => {
+    let titulo = card.querySelector("h2").innerText.toLowerCase();
+    let descricao = card.querySelector("p").innerText.toLowerCase();
+
+    if (titulo.includes(query) || descricao.includes(query)) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
+});
+
+// também permite pesquisar enquanto digita
+document.getElementById("searchInput").addEventListener("keyup", function() {
+  document.getElementById("searchBtn").click();
+});
+</script>
 </body>
 </html>

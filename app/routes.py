@@ -7,24 +7,38 @@ from flask import current_app as app
 from .models import Filme, Colecao
 from flask import send_file
 import mimetypes
+from sqlalchemy import or_
 
 routes = Blueprint('routes', __name__)
 
 @routes.route('/')
 def home():
     page = request.args.get('page', 1, type=int)
-    filmes = (Filme.query
-              .filter(Filme.colecao_id == None)
-              .order_by(Filme.id.desc())
-              .paginate(page=page, per_page=4))
-    return render_template('index.html', filmes=filmes)
+    q = request.args.get('q', '', type=str).strip()
+
+    query = Filme.query.filter(Filme.colecao_id == None)  # só os que não estão em coleção
+
+    if q:
+        like = f"%{q}%"
+        query = query.filter(
+            or_(
+                Filme.titulo.ilike(like),
+                Filme.descricao.ilike(like)
+            )
+        )
+
+    filmes = query.order_by(Filme.id.desc()).paginate(page=page, per_page=4)
+
+    # passamos q para o template para repopular o campo e compor os links de paginação
+    return render_template('index.html', filmes=filmes, q=q)
 
 
 @routes.route('/assistir/<int:filme_id>')
 def assistir(filme_id):
     page = request.args.get('page', 1, type=int)
+    q = request.args.get('q', '', type=str)
     filme = Filme.query.get_or_404(filme_id)
-    return render_template('assistir.html', filme=filme, page_back=page)
+    return render_template('assistir.html', filme=filme, page_back=page, q_back=q)
 
 @routes.route("/adicionar", methods=["GET", "POST"])
 def adicionar():
@@ -59,7 +73,9 @@ def editar(filme_id):
         filme.video = request.form["video"]
         filme.colecao_id = request.form.get("colecao_id") or None
         db.session.commit()
-        return redirect(url_for('routes.home', page=request.args.get('page', 1, type=int)))
+        return redirect(url_for('routes.home',
+                        page=request.args.get('page', 1, type=int),
+                        q=request.args.get('q', '', type=str)))
     return render_template("editar.html", filme=filme, colecoes=colecoes)
 
 
@@ -68,7 +84,9 @@ def remover(filme_id):
     filme = Filme.query.get_or_404(filme_id)
     db.session.delete(filme)
     db.session.commit()
-    return redirect(url_for('routes.home', page=request.args.get('page', 1, type=int)))
+    return redirect(url_for('routes.home',
+                        page=request.args.get('page', 1, type=int),
+                        q=request.args.get('q', '', type=str)))
 
 
 @routes.route('/media/video/<int:filme_id>')

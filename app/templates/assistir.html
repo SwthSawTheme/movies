@@ -8,7 +8,7 @@
 <body>
     <header>
         <h1>🎥 {{ filme.titulo }}</h1>
-        <a class="btn" href="{{ url_for('routes.home', page=page_back) }}">← Voltar (pág. {{ page_back }})</a>
+        <a class="btn" href="{{ url_for('routes.home', page=page_back, q=q_back) }}">← Voltar (pág. {{ page_back }})</a>
     </header>
     <main class="video-container">
         <video width="800" controls autoplay>
